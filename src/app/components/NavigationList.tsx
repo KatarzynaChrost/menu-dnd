@@ -33,18 +33,39 @@ const SortableItem: React.FC<{
   return (
     <div
       style={style}
-      className="p-4 border rounded my-2 bg-white flex justify-between items-center"
+      className="p-4 bg-white flex justify-between items-center border-b border-gray-200"
     >
-      <div ref={setNodeRef} {...attributes} {...listeners}>
-        drag me
+      <div
+        ref={setNodeRef}
+        {...attributes}
+        {...listeners}
+        className="cursor-move flex items-center"
+      >
+        <span className="text-gray-500">draggg</span>
       </div>
-      <span>{item.label}</span>
-      <div className="flex space-x-2">
-        <button onClick={onEdit} className="text-blue-500">
+
+      <div>
+        <p className="text-gray-800 font-medium">{item.label}</p>
+        <p className="text-gray-700">{item.url}</p>
+      </div>
+      <div className="flex space-x-4">
+        <button
+          onClick={onEdit}
+          className="text-gray-600 bg-gray-100 px-3 py-1 rounded hover:bg-gray-200 focus:outline-none"
+        >
           Edytuj
         </button>
-        <button onClick={onDelete} className="text-red-500">
+        <button
+          onClick={onDelete}
+          className="text-red-600 bg-red-100 px-3 py-1 rounded hover:bg-red-200 focus:outline-none"
+        >
           Usuń
+        </button>
+        <button
+          // onClick={onAddSubItem}
+          className="text-purple-600 bg-purple-100 px-3 py-1 rounded hover:bg-purple-200 focus:outline-none"
+        >
+          Dodaj pozycję menu
         </button>
       </div>
     </div>
