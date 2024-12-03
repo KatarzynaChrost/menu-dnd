@@ -2,6 +2,9 @@ import React from "react";
 import { SortableContext, useSortable, arrayMove } from "@dnd-kit/sortable";
 import { DndContext } from "@dnd-kit/core";
 
+import Drag from "../../../public/drag.svg";
+import Image from "next/image";
+
 type NavigationItem = {
   id: string;
   label: string;
@@ -38,15 +41,17 @@ const SortableItem: React.FC<SortableItemProps> = ({
       style={style}
       className="p-4 bg-white flex flex-col border-b border-gray-200"
     >
-      <div className="flex justify-between items-center">
-        <div {...attributes} {...listeners} className="cursor-move">
-          <span className="text-gray-500">drag icon</span>
+      <div className="flex justify-between items-center ml-7">
+        <div className="flex gap-5 items-center">
+          <div {...attributes} {...listeners} className="cursor-move">
+            <Image src={Drag} width={20} height={20} alt="drag icon" />
+          </div>
+          <div className="space-y-1">
+            <p className="text-gray-800 font-semibold text-sm">{item.label}</p>
+            <p className="text-gray-700 text-sm font-normal">{item.url}</p>
+          </div>
         </div>
-        <div>
-          <p className="text-gray-800 font-medium">{item.label}</p>
-          <p className="text-gray-700">{item.url}</p>
-        </div>
-        <div className="flex rounded-lg overflow-hidden border border-gray-200 text-gray-800">
+        <div className="flex rounded-lg text-sm font-semibold overflow-hidden border border-gray-200 text-gray-800">
           <button onClick={onDelete} className="px-4 py-2">
             Usuń
           </button>
@@ -68,7 +73,7 @@ const SortableItem: React.FC<SortableItemProps> = ({
             items={item.children}
             onEditItem={onEdit}
             onDeleteItem={onDelete}
-            onReorder={(newOrder) => onAddSubItem(item.id)}
+            onReorder={() => onAddSubItem(item.id)}
             onAddSubItem={onAddSubItem}
           />
         </div>

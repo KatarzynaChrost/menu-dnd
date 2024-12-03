@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import NavigationList from "./components/NavigationList";
 import NavigationForm from "./components/NavigationForm";
 import NavigationEditForm from "./components/NavigationEditForm";
+import Image from "next/image";
+import Add from "../../public/add.svg";
 
 export type NavigationItem = {
   id: string;
@@ -25,8 +27,6 @@ const App: React.FC = () => {
     setShowMoreForm(false);
   };
 
-  console.log(navigationItems);
-
   const handleAddSubItem = (parentId: string) => {
     const newSubItem: NavigationItem = {
       id: Date.now().toString(),
@@ -35,27 +35,11 @@ const App: React.FC = () => {
     };
 
     setNavigationItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === parentId
-          ? {
-              ...item,
-              children: [...(item.children || []), newSubItem],
-            }
-          : item.children
-          ? {
-              ...item,
-              children: handleAddSubItemRecursive(
-                item.children,
-                parentId,
-                newSubItem
-              ),
-            }
-          : item
-      )
+      addSubItemRecursive(prevItems, parentId, newSubItem)
     );
   };
 
-  const handleAddSubItemRecursive = (
+  const addSubItemRecursive = (
     items: NavigationItem[],
     parentId: string,
     newSubItem: NavigationItem
@@ -66,25 +50,46 @@ const App: React.FC = () => {
         : item.children
         ? {
             ...item,
-            children: handleAddSubItemRecursive(
-              item.children,
-              parentId,
-              newSubItem
-            ),
+            children: addSubItemRecursive(item.children, parentId, newSubItem),
           }
         : item
     );
   };
 
   const handleEditItem = (updatedItem: NavigationItem) => {
-    setNavigationItems((items) =>
-      items.map((item) => (item.id === updatedItem.id ? updatedItem : item))
-    );
+    setNavigationItems(editItemRecursive(navigationItems, updatedItem));
     setEditingItem(null);
   };
 
+  const editItemRecursive = (
+    items: NavigationItem[],
+    updatedItem: NavigationItem
+  ): NavigationItem[] => {
+    return items.map((item) =>
+      item.id === updatedItem.id
+        ? { ...item, ...updatedItem }
+        : item.children
+        ? { ...item, children: editItemRecursive(item.children, updatedItem) }
+        : item
+    );
+  };
+
   const handleDeleteItem = (itemId: string) => {
-    setNavigationItems((items) => items.filter((item) => item.id !== itemId));
+    setNavigationItems(deleteItemRecursive(navigationItems, itemId));
+  };
+
+  const deleteItemRecursive = (
+    items: NavigationItem[],
+    itemId: string
+  ): NavigationItem[] => {
+    return items
+      .filter((item) => item.id !== itemId)
+      .map((item) => ({
+        ...item,
+        children: item.children
+          ? deleteItemRecursive(item.children, itemId)
+          : undefined,
+      }));
   };
 
   const handleReorder = (newOrder: NavigationItem[]) => {
@@ -102,9 +107,10 @@ const App: React.FC = () => {
             W tym menu nie ma jeszcze żadnych linków.
           </p>
           <button
-            className="mt-4 px-4 py-2 bg-purple-500 text-white rounded-lg font-semibold hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-2"
+            className="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 flex items-center gap-2 text-sm"
             onClick={() => setShowForm(true)}
           >
+            <Image src={Add} width={20} height={20} alt="add icon" />
             Dodaj pozycję menu
           </button>
         </div>
@@ -126,7 +132,7 @@ const App: React.FC = () => {
         />
 
         {showMoreForm && navigationItems?.length > 0 && (
-          <div className="p-4 bg-slate-100">
+          <div className="p-4 bg-gray-100">
             <NavigationForm
               onAddItem={handleAddItem}
               hide={() => setShowMoreForm(false)}
@@ -135,9 +141,9 @@ const App: React.FC = () => {
         )}
 
         {showForm && navigationItems?.length > 0 && (
-          <div className="w-full p-4 bg-slate-100">
+          <div className="w-full p-4 bg-gray-100">
             <button
-              className="bg-white border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-1"
+              className="bg-white border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-1 text-sm font-semibold"
               onClick={() => setShowMoreForm(true)}
             >
               Dodaj pozycje menu
@@ -146,8 +152,12 @@ const App: React.FC = () => {
         )}
 
         {editingItem && (
-          <div className="p-4 bg-slate-100">
-            <NavigationEditForm item={editingItem} onSave={handleEditItem} />
+          <div className="p-4 bg-gray-100">
+            <NavigationEditForm
+              item={editingItem}
+              onSave={handleEditItem}
+              hide={() => setShowMoreForm(false)}
+            />
           </div>
         )}
       </div>

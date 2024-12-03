@@ -3,6 +3,10 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { NavigationItem } from "../App";
+import Image from "next/image";
+
+import Search from "../../../public/search.svg";
+import Trash from "../../../public/trash.svg";
 
 const schema = z.object({
   label: z.string().trim().min(1, { message: "Label is required" }),
@@ -28,7 +32,7 @@ const NavigationForm: React.FC<NavigationFormProps> = ({ onAddItem, hide }) => {
       onSubmit={handleSubmit(onAddItem)}
       className="space-y-4 bg-white border border-gray-200 p-4 rounded-lg"
     >
-      <div className="grid grid-cols-[1fr_3rem]">
+      <div className="grid grid-cols-[1fr_4rem]">
         <div className="space-y-2">
           <div className="space-y-2">
             <label
@@ -41,7 +45,7 @@ const NavigationForm: React.FC<NavigationFormProps> = ({ onAddItem, hide }) => {
               id="label"
               {...register("label")}
               placeholder="np. Promocje"
-              className="border border-gray-300 p-2 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+              className="border border-gray-300 p-2 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-purple-600"
             />
             {errors.label && (
               <span className="text-red-500 text-sm">
@@ -59,23 +63,26 @@ const NavigationForm: React.FC<NavigationFormProps> = ({ onAddItem, hide }) => {
             </label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 flex items-center pl-2">
-                🔍
+                <Image src={Search} width={20} height={20} alt="search icon" />
               </span>
               <input
                 id="url"
                 {...register("url")}
                 placeholder="Wklej lub wyszukaj"
-                className="border border-gray-300 p-2 w-full pl-8 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-purple-500"
+                className="border border-gray-300 p-2 w-full pl-8 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-600 focus:border-purple-600"
               />
             </div>
           </div>
         </div>
-        <button onClick={hide}> X </button>
+        <div className="flex items-end flex-col p-3">
+          <button onClick={hide}>
+            <Image src={Trash} width={20} height={20} alt="trash icon" />
+          </button>
+        </div>
       </div>
 
-      <div className="flex justify-start gap-4">
+      <div className="flex justify-start gap-4 text-sm font-semibold">
         <button
-          type="button"
           className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-gray-300"
           onClick={hide}
         >
@@ -83,7 +90,7 @@ const NavigationForm: React.FC<NavigationFormProps> = ({ onAddItem, hide }) => {
         </button>
         <button
           type="submit"
-          className="bg-white text-purple-500 border-purple-500 border px-4 py-2 rounded-md hover:border-purple-600 focus:outline-none focus:ring-1 focus:ring-purple-500"
+          className="bg-white text-purple-600 border-purple-600 border px-4 py-2 rounded-md hover:border-purple-700 focus:outline-none focus:ring-1 focus:ring-purple-600"
         >
           Dodaj
         </button>
