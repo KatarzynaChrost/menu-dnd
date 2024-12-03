@@ -13,9 +13,10 @@ type NavigationFormData = z.infer<typeof schema>;
 
 interface NavigationFormProps {
   onAddItem: (data: NavigationItem) => void;
+  hide: () => void;
 }
 
-const NavigationForm: React.FC<NavigationFormProps> = ({ onAddItem }) => {
+const NavigationForm: React.FC<NavigationFormProps> = ({ onAddItem, hide }) => {
   const {
     handleSubmit,
     register,
@@ -69,13 +70,14 @@ const NavigationForm: React.FC<NavigationFormProps> = ({ onAddItem }) => {
             </div>
           </div>
         </div>
-        <button> X </button>
+        <button onClick={hide}> X </button>
       </div>
 
       <div className="flex justify-start gap-4">
         <button
           type="button"
           className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-gray-300"
+          onClick={hide}
         >
           Anuluj
         </button>

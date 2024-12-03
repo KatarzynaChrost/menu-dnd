@@ -1,14 +1,14 @@
 "use client";
 import React, { useState } from "react";
-import NavigationForm from "./components/NavigationForm";
 import NavigationList from "./components/NavigationList";
+import NavigationForm from "./components/NavigationForm";
 import NavigationEditForm from "./components/NavigationEditForm";
 
 export type NavigationItem = {
   id: string;
   label: string;
   url: string;
-  //   children?: NavigationItem[];
+  children?: NavigationItem[];
 };
 
 const App: React.FC = () => {
@@ -25,6 +25,57 @@ const App: React.FC = () => {
     setShowMoreForm(false);
   };
 
+  console.log(navigationItems);
+
+  const handleAddSubItem = (parentId: string) => {
+    const newSubItem: NavigationItem = {
+      id: Date.now().toString(),
+      label: "Nowa pozycja",
+      url: "",
+    };
+
+    setNavigationItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === parentId
+          ? {
+              ...item,
+              children: [...(item.children || []), newSubItem],
+            }
+          : item.children
+          ? {
+              ...item,
+              children: handleAddSubItemRecursive(
+                item.children,
+                parentId,
+                newSubItem
+              ),
+            }
+          : item
+      )
+    );
+  };
+
+  const handleAddSubItemRecursive = (
+    items: NavigationItem[],
+    parentId: string,
+    newSubItem: NavigationItem
+  ): NavigationItem[] => {
+    return items.map((item) =>
+      item.id === parentId
+        ? { ...item, children: [...(item.children || []), newSubItem] }
+        : item.children
+        ? {
+            ...item,
+            children: handleAddSubItemRecursive(
+              item.children,
+              parentId,
+              newSubItem
+            ),
+          }
+        : item
+    );
+  };
+
   const handleEditItem = (updatedItem: NavigationItem) => {
     setNavigationItems((items) =>
       items.map((item) => (item.id === updatedItem.id ? updatedItem : item))
@@ -32,8 +83,8 @@ const App: React.FC = () => {
     setEditingItem(null);
   };
 
-  const handleDeleteItem = (id: string) => {
-    setNavigationItems((items) => items.filter((item) => item.id !== id));
+  const handleDeleteItem = (itemId: string) => {
+    setNavigationItems((items) => items.filter((item) => item.id !== itemId));
   };
 
   const handleReorder = (newOrder: NavigationItem[]) => {
@@ -60,7 +111,10 @@ const App: React.FC = () => {
       )}
       <div className="rounded-lg overflow-hidden w-full border border-gray-300">
         {showForm && navigationItems?.length === 0 && (
-          <NavigationForm onAddItem={handleAddItem} />
+          <NavigationForm
+            onAddItem={handleAddItem}
+            hide={() => setShowForm(false)}
+          />
         )}
 
         <NavigationList
@@ -68,11 +122,15 @@ const App: React.FC = () => {
           onReorder={handleReorder}
           onEditItem={setEditingItem}
           onDeleteItem={handleDeleteItem}
+          onAddSubItem={handleAddSubItem}
         />
 
         {showMoreForm && navigationItems?.length > 0 && (
           <div className="p-4 bg-slate-100">
-            <NavigationForm onAddItem={handleAddItem} />
+            <NavigationForm
+              onAddItem={handleAddItem}
+              hide={() => setShowMoreForm(false)}
+            />
           </div>
         )}
 

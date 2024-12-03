@@ -6,20 +6,22 @@ type NavigationItem = {
   id: string;
   label: string;
   url: string;
+  children?: NavigationItem[];
 };
 
-interface NavigationListProps {
-  items: NavigationItem[];
-  onReorder: (items: NavigationItem[]) => void;
-  onEditItem: (item: NavigationItem) => void;
-  onDeleteItem: (id: string) => void;
-}
-
-const SortableItem: React.FC<{
+interface SortableItemProps {
   item: NavigationItem;
   onEdit: () => void;
   onDelete: () => void;
-}> = ({ item, onEdit, onDelete }) => {
+  onAddSubItem: (parentId: string) => void;
+}
+
+const SortableItem: React.FC<SortableItemProps> = ({
+  item,
+  onEdit,
+  onDelete,
+  onAddSubItem,
+}) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: item.id });
 
@@ -32,48 +34,63 @@ const SortableItem: React.FC<{
 
   return (
     <div
+      ref={setNodeRef}
       style={style}
-      className="p-4 bg-white flex justify-between items-center border-b border-gray-200"
+      className="p-4 bg-white flex flex-col border-b border-gray-200"
     >
-      <div
-        ref={setNodeRef}
-        {...attributes}
-        {...listeners}
-        className="cursor-move flex items-center"
-      >
-        <span className="text-gray-500">drag icon</span>
+      <div className="flex justify-between items-center">
+        <div {...attributes} {...listeners} className="cursor-move">
+          <span className="text-gray-500">drag icon</span>
+        </div>
+        <div>
+          <p className="text-gray-800 font-medium">{item.label}</p>
+          <p className="text-gray-700">{item.url}</p>
+        </div>
+        <div className="flex rounded-lg overflow-hidden border border-gray-200 text-gray-800">
+          <button onClick={onDelete} className="px-4 py-2">
+            Usuń
+          </button>
+          <button
+            onClick={onEdit}
+            className="px-4 py-2 border-r border-l border-gray-200"
+          >
+            Edytuj
+          </button>
+          <button onClick={() => onAddSubItem(item.id)} className="px-4 py-2">
+            Dodaj pozycję
+          </button>
+        </div>
       </div>
 
-      <div>
-        <p className="text-gray-800 font-medium">{item.label}</p>
-        <p className="text-gray-700">{item.url}</p>
-      </div>
-      <div className="flex rounded-lg overflow-hidden border border-gray-200 text-gray-800">
-        <button onClick={onDelete} className="px-4 py-2 focus:outline-none">
-          Usuń
-        </button>
-        <button
-          onClick={onEdit}
-          className="px-4 py-2 focus:outline-none border-r border-l border-gray-200"
-        >
-          Edytuj
-        </button>
-        <button
-          // onClick={onAddSubItem}
-          className="px-4 py-2 focus:outline-none"
-        >
-          Dodaj pozycję menu
-        </button>
-      </div>
+      {item.children && (
+        <div className="ml-8 mt-2">
+          <NavigationList
+            items={item.children}
+            onEditItem={onEdit}
+            onDeleteItem={onDelete}
+            onReorder={(newOrder) => onAddSubItem(item.id)}
+            onAddSubItem={onAddSubItem}
+          />
+        </div>
+      )}
     </div>
   );
 };
+
+interface NavigationListProps {
+  items: NavigationItem[];
+  onReorder: (items: NavigationItem[]) => void;
+  onEditItem: (item: NavigationItem) => void;
+  onDeleteItem: (id: string) => void;
+  onAddSubItem: (parentId: string) => void;
+}
 
 const NavigationList: React.FC<NavigationListProps> = ({
   items,
   onReorder,
   onEditItem,
   onDeleteItem,
+  onAddSubItem,
 }) => {
   const handleDragEnd = ({ active, over }: any) => {
     if (active.id !== over?.id) {
@@ -93,6 +110,7 @@ const NavigationList: React.FC<NavigationListProps> = ({
             item={item}
             onEdit={() => onEditItem(item)}
             onDelete={() => onDeleteItem(item.id)}
+            onAddSubItem={(parentId) => onAddSubItem(parentId)}
           />
         ))}
       </SortableContext>

@@ -10,11 +10,13 @@ type NavigationItem = {
 interface NavigationEditFormProps {
   item: NavigationItem;
   onSave: (updatedItem: NavigationItem) => void;
+  hide: () => void;
 }
 
 const NavigationEditForm: React.FC<NavigationEditFormProps> = ({
   item,
   onSave,
+  hide,
 }) => {
   const {
     register,
@@ -75,13 +77,14 @@ const NavigationEditForm: React.FC<NavigationEditFormProps> = ({
             </div>
           </div>
         </div>
-        <button> X </button>
+        <button onClick={hide}> X </button>
       </div>
 
       <div className="flex justify-start gap-4">
         <button
           type="button"
           className="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-gray-300"
+          onClick={hide}
         >
           Anuluj
         </button>
