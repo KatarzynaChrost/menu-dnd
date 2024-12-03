@@ -41,7 +41,7 @@ const SortableItem: React.FC<{
         {...listeners}
         className="cursor-move flex items-center"
       >
-        <span className="text-gray-500">draggg</span>
+        <span className="text-gray-500">drag icon</span>
       </div>
 
       <div>
@@ -49,14 +49,14 @@ const SortableItem: React.FC<{
         <p className="text-gray-700">{item.url}</p>
       </div>
       <div className="flex rounded-lg overflow-hidden border border-gray-200 text-gray-800">
-        <button onClick={onEdit} className="px-4 py-2 focus:outline-none">
-          Edytuj
+        <button onClick={onDelete} className="px-4 py-2 focus:outline-none">
+          Usuń
         </button>
         <button
-          onClick={onDelete}
+          onClick={onEdit}
           className="px-4 py-2 focus:outline-none border-r border-l border-gray-200"
         >
-          Usuń
+          Edytuj
         </button>
         <button
           // onClick={onAddSubItem}

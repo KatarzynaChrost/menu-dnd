@@ -77,7 +77,7 @@ const App: React.FC = () => {
         )}
 
         {showForm && navigationItems?.length > 0 && (
-          <div className="w-full p-4 bg-gray-200">
+          <div className="w-full p-4 bg-slate-100">
             <button
               className="bg-white border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-1"
               onClick={() => setShowMoreForm(true)}
@@ -88,7 +88,7 @@ const App: React.FC = () => {
         )}
 
         {editingItem && (
-          <div className="mt-4">
+          <div className="p-4 bg-slate-100">
             <NavigationEditForm item={editingItem} onSave={handleEditItem} />
           </div>
         )}
