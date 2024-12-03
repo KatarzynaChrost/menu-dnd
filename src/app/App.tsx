@@ -89,7 +89,6 @@ const App: React.FC = () => {
 
         {editingItem && (
           <div className="mt-4">
-            <h2 className="text-xl font-bold">Edytuj element</h2>
             <NavigationEditForm item={editingItem} onSave={handleEditItem} />
           </div>
         )}

@@ -48,22 +48,19 @@ const SortableItem: React.FC<{
         <p className="text-gray-800 font-medium">{item.label}</p>
         <p className="text-gray-700">{item.url}</p>
       </div>
-      <div className="flex space-x-4">
-        <button
-          onClick={onEdit}
-          className="text-gray-600 bg-gray-100 px-3 py-1 rounded hover:bg-gray-200 focus:outline-none"
-        >
+      <div className="flex rounded-lg overflow-hidden border border-gray-200 text-gray-800">
+        <button onClick={onEdit} className="px-4 py-2 focus:outline-none">
           Edytuj
         </button>
         <button
           onClick={onDelete}
-          className="text-red-600 bg-red-100 px-3 py-1 rounded hover:bg-red-200 focus:outline-none"
+          className="px-4 py-2 focus:outline-none border-r border-l border-gray-200"
         >
           Usuń
         </button>
         <button
           // onClick={onAddSubItem}
-          className="text-purple-600 bg-purple-100 px-3 py-1 rounded hover:bg-purple-200 focus:outline-none"
+          className="px-4 py-2 focus:outline-none"
         >
           Dodaj pozycję menu
         </button>
